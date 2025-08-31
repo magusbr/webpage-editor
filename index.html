@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor HTML - Notion Style</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar para navegação entre páginas -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📝 Meu Editor</h2>
+                <button class="new-page-btn" onclick="createNewPage()">
+                    <i class="fas fa-plus"></i> Nova Página
+                </button>
+                <button class="new-page-btn" onclick="createNewSubpage()" id="new-subpage-btn" style="display: none;">
+                    <i class="fas fa-plus"></i> Nova Subpágina
+                </button>
+            </div>
+            <nav class="pages-nav">
+                <ul id="pages-list">
+                    <li class="page-item active" data-page-id="main">
+                        <span class="page-title">Página Principal</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Área principal do editor -->
+        <main class="editor-container">
+            <!-- Toolbar de formatação -->
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="addBlock('h1')" title="Título 1">
+                        <i class="fas fa-heading"></i>1
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('h2')" title="Título 2">
+                        <i class="fas fa-heading"></i>2
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('h3')" title="Título 3">
+                        <i class="fas fa-heading"></i>3
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="addBlock('ul')" title="Lista com marcadores">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('ol')" title="Lista numerada">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('toggle')" title="Toggle">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="addBlock('image')" title="Inserir Imagem">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('video')" title="Inserir Vídeo">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('link')" title="Inserir Link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('pdf')" title="Inserir PDF">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('index')" title="Inserir Índice de Páginas">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('toc')" title="Inserir Índice de Tópicos">
+                        <i class="fas fa-list-alt"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('code')" title="Inserir Código">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('external')" title="Inserir Página Externa">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="addBlock('live-code')" title="Inserir Código Interpretável">
+                        <i class="fas fa-play-circle"></i>
+                    </button>
+                </div>
+                
+                <div class="toolbar-group">
+                    <select class="alignment-select" onchange="changeAlignment(this.value)">
+                        <option value="left">⬅️ Esquerda</option>
+                        <option value="center">↔️ Centro</option>
+                        <option value="right">➡️ Direita</option>
+                        <option value="justify">📄 Justificar</option>
+                    </select>
+                </div>
+                
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="exportAllPages()" title="Exportar Todas as Páginas">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="importPages()" title="Importar Páginas">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de edição -->
+            <div class="editor" id="editor">
+                <!-- Cabeçalho estilo Notion -->
+                <div class="notion-header">
+                    <!-- Área da imagem de capa -->
+                    <div class="cover-area" id="cover-area" onclick="selectCoverImage()">
+                        <div class="cover-placeholder" id="cover-placeholder">
+                            <span>📸 Adicionar capa</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Título com emoji -->
+                    <div class="title-section">
+                        <div class="emoji-container">
+                            <span class="page-emoji" id="page-emoji" onclick="toggleEmojiSelector()">😊</span>
+                            <div class="emoji-selector" id="emoji-selector" style="display: none;">
+                                <div class="emoji-search">
+                                    <input type="text" id="emoji-search-input" placeholder="Buscar emojis..." onkeyup="filterEmojis()">
+                                </div>
+                                <div class="emoji-categories" id="emoji-categories">
+                                    <!-- Categorias de emojis serão inseridas via JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="page-title" contenteditable="true" placeholder="Título da página...">
+                            Bem-vindo ao Editor
+                        </h1>
+                    </div>
+                </div>
+                
+                <div class="editor-content" id="editor-content">
+                    <div class="block text-block" data-block-type="p">
+                        <div class="block-content" contenteditable="true" placeholder="Digite algo ou use '/' para comandos...">
+                            Comece digitando aqui! Use os botões da barra de ferramentas para adicionar diferentes tipos de conteúdo.
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="add-block-btn" onclick="addBlock('p')">
+                    <i class="fas fa-plus"></i> Adicionar bloco
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Input de arquivo oculto para upload -->
+    <input type="file" id="file-input" style="display: none;" accept=".html">
+    <input type="file" id="image-input" style="display: none;" accept="image/*">
+    <input type="file" id="pdf-input" style="display: none;" accept=".pdf">
+    <input type="file" id="cover-input" style="display: none;" accept="image/*">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
